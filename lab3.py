@@ -14,9 +14,6 @@
 #
 # Check out `labfuns.py` if you are interested in the details.
 
-import numpy as np
-from scipy import misc
-from imp import reload
 from labfuns import *
 from sklearn import decomposition
 from matplotlib.colors import ColorConverter
@@ -30,8 +27,7 @@ from matplotlib.colors import ColorConverter
 # in: labels - N x 1 vector of class labels
 # out: prior - C x 1 vector of class priors
 def computePrior(labels, W=None):
-    # Your code here
-    return prior
+    return np.bincount(labels) / len(labels)
 
 
 # Note that you do not need to handle the W argument for this part
@@ -40,6 +36,32 @@ def computePrior(labels, W=None):
 # out:    mu - C x d matrix of class means
 #      sigma - d x d x C matrix of class covariances
 def mlParams(X, labels, W=None):
+    c = len(set(labels))
+    n = len(labels)
+    d = len(X[0])
+    mu = np.zeros([c, d])
+
+    for ci in range(c):
+        mu_sum = 0
+        n_sum = 0
+        for i in range(d):
+            for k in range(n):
+                if labels[k] == ci:
+                    mu_sum += X[k][i]
+                    n_sum += 1
+            mu[ci][i] = mu_sum / n_sum
+
+    sigma = np.zeros([d, d, c])
+    for ci in range(c):
+        n_sum = 0
+        for k in range(n):
+            if labels[k] == ci:
+                n_sum += 1
+                right = [np.subtract(X[k], mu[ci])]
+                left = np.transpose(right)
+                sigma[:, :, ci] += np.multiply(left, right)
+        sigma[:, :, ci] /= n_sum
+
     return mu, sigma
 
 
@@ -63,6 +85,7 @@ def classify(X, prior, mu, sigma, covdiag=True):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X, labels)
+print(mu, sigma)
 plotGaussian(X, labels, mu, sigma)
 
 
