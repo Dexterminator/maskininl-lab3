@@ -122,16 +122,17 @@ def fetchDataset(dataset='iris'):
         X = genfromtxt('olivettifacesX.txt', delimiter=',')
         X = X/255
         y = genfromtxt('olivettifacesY.txt', delimiter=',',dtype=np.int)
-        pcadim = 0
+        pcadim = 5
     elif dataset == 'vowel':
         X = genfromtxt('vowelX.txt', delimiter=',')
         y = genfromtxt('vowelY.txt', delimiter=',',dtype=np.int)
-        pcadim = 10
+        pcadim = 0
     else:
         print "Please specify a dataset!"
         X = np.zeros(0)
         y = np.zeros(0)
         pcadim = 0
+        
     return X,y,pcadim
 
 
@@ -170,7 +171,7 @@ def plotGaussian(X,y,mu,sigma):
     for label in labels:
         classIdx = y==label
         Xclass = X[classIdx,:]
-        plot_cov_ellipse(sigma[:,:,0], mu[label])
+        plot_cov_ellipse(sigma[:,:,label], mu[label])
         plt.scatter(Xclass[:,0],Xclass[:,1],linewidths=1,s=25,color=colors[label],marker='o',alpha=0.75)
         c += 1.
 
