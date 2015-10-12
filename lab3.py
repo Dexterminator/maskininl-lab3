@@ -76,7 +76,28 @@ def classify(X, prior, mu, sigma, covdiag=True):
     # L = np.linalg.cholesky(A)
     # y = np.linalg.solve(L,b)
     # x = np.linalg.solve(L.H,y)
+    h = np.zeros(len(X))
+    d = len(sigma)
+    n = range(len(h))
+    c = len(prior)
+
+    for ni in n:
+        for k in range(c):
+            first_value = 0
+            for i in range(d):
+                first_value += np.log(sigma[i][i][ni])
+            second_value = np.subtract(X[ni], mu[k]) * solve_equation(sigma[:, :, k],
+                                                                      np.transpose(np.subtract(X[ni], mu[k])))
+            third_value = np.log(prior[k])
+            h[ni] = -first_value - second_value / 2 + third_value
     return h
+
+
+def solve_equation(A, b):
+    L = np.linalg.cholesky(A)
+    y = np.linalg.solve(L, b)
+    x = np.linalg.solve(np.transpose(L), y)
+    return x
 
 
 # ## Test the Maximum Likelihood estimates
