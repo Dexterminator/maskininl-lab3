@@ -195,12 +195,12 @@ def trainBoost(X, labels, T=5, covdiag=True):
 
     return priors, mus, sigmas, alphas
 
+
 def normalize(weights):
     sum = 0
     for weight in weights:
         sum += weight
     return weights / sum
-
 
 
 # in:       X - N x d matrix of N data points
@@ -339,7 +339,7 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
 
     plt.xlim(np.min(pX[:, 0]), np.max(pX[:, 0]))
     plt.ylim(np.min(pX[:, 1]), np.max(pX[:, 1]))
-    plt.show()
+    # plt.show()
 
 
 # ## Run some experiments
@@ -366,6 +366,10 @@ def testEstimates():
     plotGaussian(X, labels, mu, sigma)
 
 
+def file_name(data_set, covdiag, doboost):
+    return data_set + '_' + 'covdiag_' + str(covdiag).lower() + '_doboost_' + str(doboost).lower() + '.png'
+
+
 def main():
     # testEstimates()
     setNumpyPrintOptions()
@@ -373,10 +377,12 @@ def main():
     split = 0.7
     boostiter = 5
     doboost = True
-    runExperiment('iris', False, False, split, boostiter)
-    runExperiment('iris', True, False, split, boostiter)
-    runExperiment('iris', False, True, split, boostiter)
-    runExperiment('iris', True, True, split, boostiter)
+    covdiag = True
+
+    # runExperiment('iris', False, False, split, boostiter)
+    # runExperiment('iris', True, False, split, boostiter)
+    # runExperiment('iris', False, True, split, boostiter)
+    # runExperiment('iris', True, True, split, boostiter)
     # runExperiment('vowel', False, doboost, split, boostiter)
     # runExperiment('vowel', True, doboost, split, boostiter)
     # for data_set in data_sets:
