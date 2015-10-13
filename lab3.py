@@ -13,6 +13,7 @@
 # ## Import the libraries
 #
 # Check out `labfuns.py` if you are interested in the details.
+import sys
 
 from labfuns import *
 from sklearn import decomposition
@@ -92,6 +93,7 @@ def classify(X, prior, mu, sigma, covdiag=True):
 
     if not covdiag:
         for ni in range(n):
+            highest_delta = None
             for k in range(c):
                 first_value = 0
                 for i in range(d):
@@ -102,9 +104,12 @@ def classify(X, prior, mu, sigma, covdiag=True):
                 second_value = np.dot(subtracted, solved_equation)[0][0]
                 third_value = np.log(prior[k])
                 delta = -first_value - second_value / 2 + third_value
-                h[ni] = delta
+                if highest_delta is None or delta > highest_delta:
+                    highest_delta = delta
+                    h[ni] = k
     else:
         for ni in range(n):
+            highest_delta = None
             for k in range(c):
                 diag = np.diag(np.diag(sigma[:, :, k]))
                 first_value = np.log(np.linalg.det(diag)) / 2
@@ -112,7 +117,10 @@ def classify(X, prior, mu, sigma, covdiag=True):
                 second_value = np.dot(np.dot(subtract, np.linalg.inv(diag)), np.transpose(subtract)) / 2
                 third_value = np.log(prior[k])
                 delta = -first_value - second_value / 2 + third_value
-                h[ni] = delta
+                if highest_delta is None or delta > highest_delta:
+                    highest_delta = delta
+                    h[ni] = k
+
     return h
 
 
@@ -201,13 +209,15 @@ def testClassifier(dataset='iris', dim=0, split=0.7, doboost=False, boostiter=5,
             yPr = classify(xTe, prior, mu, sigma, covdiag=covdiag)
 
         # Compute classification error
-        print
-        "Trial:", trial, "Accuracy", 100 * np.mean((yPr == yTe).astype(float))
+        print(
+            "Trial:", trial, "Accuracy", 100 * np.mean((yPr == yTe).astype(float))
+        )
 
         means[trial] = 100 * np.mean((yPr == yTe).astype(float))
 
-    print
-    "Final mean classification accuracy ", np.mean(means), "with standard deviation", np.std(means)
+    print(
+        "Final mean classification accuracy ", np.mean(means), "with standard deviation", np.std(means)
+    )
 
 
 # ## Plotting the decision boundary
