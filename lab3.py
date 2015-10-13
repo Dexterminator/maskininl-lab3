@@ -87,18 +87,21 @@ def classify(X, prior, mu, sigma, covdiag=True):
     # x = np.linalg.solve(L.H,y)
     h = np.zeros(len(X))
     d = len(sigma)
-    n = range(len(h))
+    n = len(h)
     c = len(prior)
 
-    for ni in n:
+    for ni in range(n):
         for k in range(c):
             first_value = 0
             for i in range(d):
-                first_value += np.log(sigma[i][i][ni])
-            second_value = np.subtract(X[ni], mu[k]) * solve_equation(sigma[:, :, k],
-                                                                      np.transpose(np.subtract(X[ni], mu[k])))
+                first_value += np.log(sigma[i][i][k])
+            solved_equation = np.transpose([solve_equation(sigma[:, :, k], np.transpose(np.subtract(X[ni], mu[k])))])
+            subtracted = np.transpose(np.transpose([np.subtract(X[ni], mu[k])]))
+            second_value = np.dot(subtracted, solved_equation)[0][0]
             third_value = np.log(prior[k])
-            h[ni] = -first_value - second_value / 2 + third_value
+            delta = -first_value - second_value / 2 + third_value
+            h[ni] = delta
+            break
     return h
 
 
@@ -115,9 +118,9 @@ def solve_equation(A, b):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X, labels)
-print(mu)
-print(sigma)
-plotGaussian(X, labels, mu, sigma)
+
+
+# plotGaussian(X, labels, mu, sigma)
 
 
 # ## Boosting functions to implement
