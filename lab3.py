@@ -20,6 +20,8 @@ from labfuns import *
 from sklearn import decomposition
 from matplotlib.colors import ColorConverter
 
+txt_file = 'accuracy.txt'
+
 
 # ## Bayes classifier functions to implement
 #
@@ -277,9 +279,17 @@ def testClassifier(dataset='iris', dim=0, split=0.7, doboost=False, boostiter=5,
 
         means[trial] = 100 * np.mean((yPr == yTe).astype(float))
 
+    mean = np.mean(means)
+    std_dev = np.std(means)
     print(
-        "Final mean classification accuracy ", np.mean(means), "with standard deviation", np.std(means)
+        "Final mean classification accuracy ", mean, "with standard deviation", std_dev
     )
+
+    with open(txt_file, 'a') as f:
+        f.write('dataset: ' + dataset + ', covdiag: ' + str(covdiag) + ', boost: ' + str(doboost) + '\n')
+        f.write('Final mean classification accuracy: ' + str(mean) + '\n')
+        f.write('Standard deviation: ' + str(std_dev) + '\n')
+        f.write('\n')
 
 
 # ## Plotting the decision boundary
