@@ -43,14 +43,17 @@ def mlParams(X, labels, W=None):
     d = len(X[0])
     mu = np.zeros([c, d])
 
+    if W is None:
+        W = np.ones(n)
+
     for k in range(c):
         for i in range(d):
             mu_sum = 0
             n_sum = 0
             for ni in range(n):
                 if labels[ni] == k:
-                    mu_sum += X[ni][i]
-                    n_sum += 1
+                    mu_sum += X[ni][i] * W[ni]
+                    n_sum += W[ni]
             mu[k][i] = mu_sum / n_sum
 
     sigma = np.zeros([d, d, c])
@@ -299,10 +302,10 @@ def main():
     split = 0.7
     boostiter = 5
     doboost = False
-    # runExperiment('iris', False, doboost, split, boostiter)
-    # runExperiment('iris', True, doboost, split, boostiter)
-    runExperiment('vowel', False, doboost, split, boostiter)
-    runExperiment('vowel', True, doboost, split, boostiter)
+    runExperiment('iris', False, doboost, split, boostiter)
+    runExperiment('iris', True, doboost, split, boostiter)
+    # runExperiment('vowel', False, doboost, split, boostiter)
+    # runExperiment('vowel', True, doboost, split, boostiter)
     # for data_set in data_sets:
     #     runExperiment(data_set, False, doboost, split, boostiter)
     #     runExperiment(data_set, True, doboost, split, boostiter)
