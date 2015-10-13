@@ -98,6 +98,7 @@ def classify(X, prior, mu, sigma, covdiag=True):
                 first_value = 0
                 for i in range(d):
                     first_value += np.log(sigma[i][i][k])
+                first_value = np.log(np.linalg.det(sigma[:, :, k])) / 2
                 solved_equation = np.transpose(
                     [solve_equation(sigma[:, :, k], np.transpose(np.subtract(X[ni], mu[k])))])
                 subtracted = np.transpose(np.transpose([np.subtract(X[ni], mu[k])]))
