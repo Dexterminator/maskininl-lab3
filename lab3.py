@@ -14,6 +14,7 @@
 #
 # Check out `labfuns.py` if you are interested in the details.
 import sys
+import math
 
 from labfuns import *
 from sklearn import decomposition
@@ -52,6 +53,7 @@ def mlParams(X, labels, W=None):
     if W is None:
         W = np.ones(n)
 
+    # print('W', W)
     for k in range(c):
         for i in range(d):
             mu_sum = 0
@@ -157,12 +159,13 @@ def trainBoost(X, labels, T=5, covdiag=True):
     d = len(X[0])
     n = len(labels)
 
-    priors = np.empty([T, c])
-    mus = np.empty([T, c, d])
-    sigmas = np.empty([T, d, d, c])
-    alphas = np.empty(T)
+    priors = np.zeros([T, c])
+    mus = np.zeros([T, c, d])
+    sigmas = np.zeros([T, d, d, c])
+    alphas = np.zeros(T)
 
     weights = np.ones(n) / n
+    # print('weights', weights)
     for t in range(T):
         mu, sigma = mlParams(X, labels, weights)
         prior = computePrior(labels, weights)
@@ -176,6 +179,11 @@ def trainBoost(X, labels, T=5, covdiag=True):
             if hi[label_index] != label:
                 error_sum += weights[label_index]
 
+        # print('error_sum', error_sum)
+        if error_sum < 10e-40:
+            alphas[t] = float("inf")
+            break
+
         alphas[t] = (np.log(1 - error_sum) - np.log(error_sum)) / 2
 
         for label_index, label in enumerate(labels):
@@ -183,9 +191,16 @@ def trainBoost(X, labels, T=5, covdiag=True):
                 weights[label_index] *= error_sum ** -alphas[t]
             else:
                 weights[label_index] *= error_sum ** alphas[t]
-        weights /= sum(weights)
+        weights = normalize(weights)
 
     return priors, mus, sigmas, alphas
+
+def normalize(weights):
+    sum = 0
+    for weight in weights:
+        sum += weight
+    return weights / sum
+
 
 
 # in:       X - N x d matrix of N data points
@@ -195,8 +210,27 @@ def trainBoost(X, labels, T=5, covdiag=True):
 #      alphas - T x 1 vector of vote weights
 # out:  yPred - N x 1 class predictions for test points
 def classifyBoost(X, priors, mus, sigmas, alphas, covdiag=True):
-    # Your code here
-    return c
+    n = len(X)
+    T = len(alphas)
+    c = len(priors[0])
+    matrix = np.zeros([n, c])
+    for t in range(T):
+        ht = classify(X, priors[t], mus[t], sigmas[t], covdiag)
+        for ni in range(n):
+            matrix[ni][ht[ni]] += alphas[t]
+        if math.isinf(alphas[t]):
+            break
+
+    yPred = np.empty(n)
+    for ni in range(n):
+        likliest_class = None
+        highest_vote_value = None
+        for ci in range(c):
+            if likliest_class is None or matrix[ni][ci] > highest_vote_value:
+                likliest_class = ci
+                highest_vote_value = matrix[ni][ci]
+        yPred[ni] = likliest_class
+    return yPred
 
 
 # ## Define our testing function
@@ -338,9 +372,11 @@ def main():
     data_sets = ('iris', 'wine', 'olivetti', 'vowel')
     split = 0.7
     boostiter = 5
-    doboost = False
-    runExperiment('iris', False, doboost, split, boostiter)
-    runExperiment('iris', True, doboost, split, boostiter)
+    doboost = True
+    runExperiment('iris', False, False, split, boostiter)
+    runExperiment('iris', True, False, split, boostiter)
+    runExperiment('iris', False, True, split, boostiter)
+    runExperiment('iris', True, True, split, boostiter)
     # runExperiment('vowel', False, doboost, split, boostiter)
     # runExperiment('vowel', True, doboost, split, boostiter)
     # for data_set in data_sets:
