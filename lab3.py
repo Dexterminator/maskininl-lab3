@@ -41,28 +41,36 @@ def mlParams(X, labels, W=None):
     d = len(X[0])
     mu = np.zeros([c, d])
 
-    for ci in range(c):
-        mu_sum = 0
-        n_sum = 0
+    for k in range(c):
         for i in range(d):
-            for k in range(n):
-                if labels[k] == ci:
-                    mu_sum += X[k][i]
+            mu_sum = 0
+            n_sum = 0
+            for ni in range(n):
+                if labels[ni] == k:
+                    mu_sum += X[ni][i]
                     n_sum += 1
-            mu[ci][i] = mu_sum / n_sum
+            mu[k][i] = mu_sum / n_sum
 
     sigma = np.zeros([d, d, c])
-    for ci in range(c):
+    for k in range(c):
         n_sum = 0
-        for k in range(n):
-            if labels[k] == ci:
+        for ni in range(n):
+            if labels[ni] == k:
                 n_sum += 1
-                right = [np.subtract(X[k], mu[ci])]
-                left = np.transpose(right)
-                sigma[:, :, ci] += np.multiply(left, right)
-        sigma[:, :, ci] /= n_sum
+                subtracted = np.subtract(X[ni], mu[k])
+                sigma[:, :, k] += multiply_matrix(subtracted)
+        sigma[:, :, k] /= n_sum
 
     return mu, sigma
+
+
+def multiply_matrix(subtracted):
+    n = len(subtracted)
+    matrix = np.empty([n, n])
+    for i in range(n):
+        for j in range(n):
+            matrix[i][j] = subtracted[i] * subtracted[j]
+    return matrix
 
 
 # in:      X - N x d matrix of M data points
@@ -106,7 +114,8 @@ def solve_equation(A, b):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X, labels)
-print(mu, sigma)
+print(mu)
+print(sigma)
 plotGaussian(X, labels, mu, sigma)
 
 
