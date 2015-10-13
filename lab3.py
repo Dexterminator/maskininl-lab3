@@ -28,8 +28,14 @@ from matplotlib.colors import ColorConverter
 # in: labels - N x 1 vector of class labels
 # out: prior - C x 1 vector of class priors
 def computePrior(labels, W=None):
-    labels = [int(label) for label in labels]
-    return np.bincount(labels) / len(labels)
+    if W is None:
+        labels = [int(label) for label in labels]
+        return np.bincount(labels) / len(labels)
+
+    prior = np.empty(len(set(labels)))
+    for i in range(len(labels)):
+        prior[labels[i]] += W[i]
+    return prior
 
 
 # Note that you do not need to handle the W argument for this part
@@ -147,7 +153,38 @@ def solve_equation(A, b):
 #      sigmas - length T list of sigma as above
 #      alphas - T x 1 vector of vote weights
 def trainBoost(X, labels, T=5, covdiag=True):
-    # Your code here
+    c = len(set(labels))
+    d = len(X[0])
+    n = len(labels)
+
+    priors = np.empty([T, c])
+    mus = np.empty([T, c, d])
+    sigmas = np.empty([T, d, d, c])
+    alphas = np.empty(T)
+
+    weights = np.ones(n) / n
+    for t in range(T):
+        mu, sigma = mlParams(X, labels, weights)
+        prior = computePrior(labels, weights)
+        hi = classify(X, prior, mu, sigma, covdiag)
+        priors[t] = prior
+        mus[t] = mu
+        sigmas[t] = sigma
+
+        error_sum = 0
+        for label_index, label in enumerate(labels):
+            if hi[label_index] != label:
+                error_sum += weights[label_index]
+
+        alphas[t] = (np.log(1 - error_sum) - np.log(error_sum)) / 2
+
+        for label_index, label in enumerate(labels):
+            if hi[label_index] == label:
+                weights[label_index] *= error_sum ** -alphas[t]
+            else:
+                weights[label_index] *= error_sum ** alphas[t]
+        weights /= sum(weights)
+
     return priors, mus, sigmas, alphas
 
 
