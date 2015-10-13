@@ -272,9 +272,9 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
 #
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 # Example usage of the functions
-def runExperiments():
-    testClassifier(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=False)
-    plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=False)
+def runExperiment(dataset, covdiag, doboost, split, boostiter):
+    testClassifier(dataset=dataset, split=split, doboost=doboost, boostiter=boostiter, covdiag=covdiag)
+    plotBoundary(dataset=dataset, split=split, doboost=doboost, boostiter=boostiter, covdiag=covdiag)
 
 
 def setNumpyPrintOptions():
@@ -293,9 +293,19 @@ def testEstimates():
 
 
 def main():
-    testEstimates()
+    # testEstimates()
     setNumpyPrintOptions()
-    runExperiments()
+    data_sets = ('iris', 'wine', 'olivetti', 'vowel')
+    split = 0.7
+    boostiter = 5
+    doboost = False
+    # runExperiment('iris', False, doboost, split, boostiter)
+    # runExperiment('iris', True, doboost, split, boostiter)
+    runExperiment('vowel', False, doboost, split, boostiter)
+    runExperiment('vowel', True, doboost, split, boostiter)
+    # for data_set in data_sets:
+    #     runExperiment(data_set, False, doboost, split, boostiter)
+    #     runExperiment(data_set, True, doboost, split, boostiter)
 
 
 if __name__ == '__main__':
