@@ -90,18 +90,29 @@ def classify(X, prior, mu, sigma, covdiag=True):
     n = len(h)
     c = len(prior)
 
-    for ni in range(n):
-        for k in range(c):
-            first_value = 0
-            for i in range(d):
-                first_value += np.log(sigma[i][i][k])
-            solved_equation = np.transpose([solve_equation(sigma[:, :, k], np.transpose(np.subtract(X[ni], mu[k])))])
-            subtracted = np.transpose(np.transpose([np.subtract(X[ni], mu[k])]))
-            second_value = np.dot(subtracted, solved_equation)[0][0]
-            third_value = np.log(prior[k])
-            delta = -first_value - second_value / 2 + third_value
-            h[ni] = delta
-            break
+    if not covdiag:
+        for ni in range(n):
+            for k in range(c):
+                first_value = 0
+                for i in range(d):
+                    first_value += np.log(sigma[i][i][k])
+                solved_equation = np.transpose(
+                    [solve_equation(sigma[:, :, k], np.transpose(np.subtract(X[ni], mu[k])))])
+                subtracted = np.transpose(np.transpose([np.subtract(X[ni], mu[k])]))
+                second_value = np.dot(subtracted, solved_equation)[0][0]
+                third_value = np.log(prior[k])
+                delta = -first_value - second_value / 2 + third_value
+                h[ni] = delta
+    else:
+        for ni in range(n):
+            for k in range(c):
+                diag = np.diag(np.diag(sigma[:, :, k]))
+                first_value = np.log(np.linalg.det(diag)) / 2
+                subtract = np.subtract(X[ni], mu[k])
+                second_value = np.dot(np.dot(subtract, np.linalg.inv(diag)), np.transpose(subtract)) / 2
+                third_value = np.log(prior[k])
+                delta = -first_value - second_value / 2 + third_value
+                h[ni] = delta
     return h
 
 
@@ -118,9 +129,7 @@ def solve_equation(A, b):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X, labels)
-
-
-# plotGaussian(X, labels, mu, sigma)
+plotGaussian(X, labels, mu, sigma)
 
 
 # ## Boosting functions to implement
