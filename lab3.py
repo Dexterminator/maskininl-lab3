@@ -27,6 +27,7 @@ from matplotlib.colors import ColorConverter
 # in: labels - N x 1 vector of class labels
 # out: prior - C x 1 vector of class priors
 def computePrior(labels, W=None):
+    labels = [int(label) for label in labels]
     return np.bincount(labels) / len(labels)
 
 
