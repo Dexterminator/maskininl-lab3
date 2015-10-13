@@ -61,9 +61,9 @@ def mlParams(X, labels, W=None):
         n_sum = 0
         for ni in range(n):
             if labels[ni] == k:
-                n_sum += 1
+                n_sum += W[ni]
                 subtracted = np.subtract(X[ni], mu[k])
-                sigma[:, :, k] += multiply_matrix(subtracted)
+                sigma[:, :, k] += multiply_matrix(subtracted) * W[ni]
         sigma[:, :, k] /= n_sum
 
     return mu, sigma
