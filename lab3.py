@@ -288,6 +288,8 @@ def testClassifier(dataset='iris', dim=0, split=0.7, doboost=False, boostiter=5,
 # boundary in the last part of the lab.
 
 def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=True):
+    name = file_name(dataset, covdiag, doboost)
+    plt.figure(name)
     X, y, pcadim = fetchDataset(dataset)
     xTr, yTr, xTe, yTe, trIdx, teIdx = trteSplitEven(X, y, split)
     pca = decomposition.PCA(n_components=2)
@@ -326,7 +328,7 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
     ys = [i + xx + (i * xx) ** 2 for i in range(len(classes))]
     colormap = cm.rainbow(np.linspace(0, 1, len(ys)))
 
-    plt.hold(True)
+    # plt.hold(True)
     conv = ColorConverter()
     for (color, c) in zip(colormap, classes):
         try:
@@ -340,6 +342,7 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
     plt.xlim(np.min(pX[:, 0]), np.max(pX[:, 0]))
     plt.ylim(np.min(pX[:, 1]), np.max(pX[:, 1]))
     # plt.show()
+    plt.savefig(name)
 
 
 # ## Run some experiments
@@ -378,6 +381,9 @@ def main():
     boostiter = 5
     doboost = True
     covdiag = True
+
+    runExperiment('iris', True, False, split, boostiter)
+    runExperiment('iris', True, True, split, boostiter)
 
     # runExperiment('iris', False, False, split, boostiter)
     # runExperiment('iris', True, False, split, boostiter)
