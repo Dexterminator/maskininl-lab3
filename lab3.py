@@ -131,15 +131,6 @@ def solve_equation(A, b):
     return x
 
 
-# ## Test the Maximum Likelihood estimates
-#
-# Call `genBlobs` and `plotGaussian` to verify your estimates.
-
-X, labels = genBlobs(centers=5)
-mu, sigma = mlParams(X, labels)
-plotGaussian(X, labels, mu, sigma)
-
-
 # ## Boosting functions to implement
 #
 # The lab descriptions state what each function should do.
@@ -169,13 +160,9 @@ def classifyBoost(X, priors, mus, sigmas, alphas, covdiag=True):
 
 # ## Define our testing function
 #
-# The function below, `testClassifier`, will be used to try out the different datasets. `fetchDataset` can be provided with any of the dataset arguments `wine`, `iris`, `olivetti` and `vowel`. Observe that we split the data into a **training** and a **testing** set.
-
-np.set_printoptions(threshold=np.nan)
-np.set_printoptions(precision=25)
-np.set_printoptions(linewidth=200)
-
-
+# The function below, `testClassifier`, will be used to try out the different datasets.
+# `fetchDataset` can be provided with any of the dataset arguments `wine`, `iris`, `olivetti` and `vowel`.
+# Observe that we split the data into a **training** and a **testing** set.
 def testClassifier(dataset='iris', dim=0, split=0.7, doboost=False, boostiter=5, covdiag=True, ntrials=100):
     X, y, pcadim = fetchDataset(dataset)
 
@@ -283,8 +270,32 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
 # ## Run some experiments
 #
 # Call the `testClassifier` and `plotBoundary` functions for this part.
-
 # Example usage of the functions
+def runExperiments():
+    testClassifier(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=False)
+    plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=False)
 
-testClassifier(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=True)
-plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=True)
+
+def setNumpyPrintOptions():
+    np.set_printoptions(threshold=np.nan)
+    np.set_printoptions(precision=25)
+    np.set_printoptions(linewidth=200)
+
+
+# ## Test the Maximum Likelihood estimates
+#
+# Call `genBlobs` and `plotGaussian` to verify your estimates.
+def testEstimates():
+    X, labels = genBlobs(centers=5)
+    mu, sigma = mlParams(X, labels)
+    plotGaussian(X, labels, mu, sigma)
+
+
+def main():
+    testEstimates()
+    setNumpyPrintOptions()
+    runExperiments()
+
+
+if __name__ == '__main__':
+    main()
