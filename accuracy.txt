@@ -1,0 +1,64 @@
+dataset: iris, covdiag: False, boost: False
+Final mean classification accuracy: 97.4888888889
+Standard deviation: 2.14660225346
+
+dataset: iris, covdiag: False, boost: True
+Final mean classification accuracy: 94.9333333333
+Standard deviation: 3.28227563336
+
+dataset: iris, covdiag: True, boost: False
+Final mean classification accuracy: 95.9333333333
+Standard deviation: 2.13275455112
+
+dataset: iris, covdiag: True, boost: True
+Final mean classification accuracy: 95.9111111111
+Standard deviation: 2.84097010036
+
+dataset: wine, covdiag: False, boost: False
+Final mean classification accuracy: 98.5283018868
+Standard deviation: 1.61384187021
+
+dataset: wine, covdiag: False, boost: True
+Final mean classification accuracy: 91.8867924528
+Standard deviation: 8.6566564128
+
+dataset: wine, covdiag: True, boost: False
+Final mean classification accuracy: 95.7358490566
+Standard deviation: 2.45457122535
+
+dataset: wine, covdiag: True, boost: True
+Final mean classification accuracy: 95.7924528302
+Standard deviation: 2.51524366498
+
+dataset: olivetti, covdiag: False, boost: False
+Final mean classification accuracy: 55.2
+Standard deviation: 5.09373253235
+
+dataset: olivetti, covdiag: False, boost: True
+Final mean classification accuracy: 53.9666666667
+Standard deviation: 4.49709782959
+
+dataset: olivetti, covdiag: True, boost: False
+Final mean classification accuracy: 57.75
+Standard deviation: 3.50495680747
+
+dataset: olivetti, covdiag: True, boost: True
+Final mean classification accuracy: 58.4833333333
+Standard deviation: 3.66170118327
+
+dataset: vowel, covdiag: False, boost: False
+Final mean classification accuracy: 90.474025974
+Standard deviation: 2.88950824276
+
+dataset: vowel, covdiag: False, boost: True
+Final mean classification accuracy: 91.5649350649
+Standard deviation: 2.3113508436
+
+dataset: vowel, covdiag: True, boost: False
+Final mean classification accuracy: 59.2077922078
+Standard deviation: 3.23684201505
+
+dataset: vowel, covdiag: True, boost: True
+Final mean classification accuracy: 68.4480519481
+Standard deviation: 4.42711919671
+
