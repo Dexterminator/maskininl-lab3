@@ -182,17 +182,16 @@ def trainBoost(X, labels, T=5, covdiag=True):
                 error_sum += weights[label_index]
 
         # print('error_sum', error_sum)
-        if error_sum < 10e-40:
-            alphas[t] = float("inf")
-            break
+        if error_sum == 0:
+            error_sum = 0.0000001
 
         alphas[t] = (np.log(1 - error_sum) - np.log(error_sum)) / 2
 
         for label_index, label in enumerate(labels):
             if hi[label_index] == label:
-                weights[label_index] *= error_sum ** -alphas[t]
+                weights[label_index] *= math.exp(-alphas[t])
             else:
-                weights[label_index] *= error_sum ** alphas[t]
+                weights[label_index] *= math.exp(alphas[t])
         weights = normalize(weights)
 
     return priors, mus, sigmas, alphas
@@ -220,8 +219,6 @@ def classifyBoost(X, priors, mus, sigmas, alphas, covdiag=True):
         ht = classify(X, priors[t], mus[t], sigmas[t], covdiag)
         for ni in range(n):
             matrix[ni][ht[ni]] += alphas[t]
-        if math.isinf(alphas[t]):
-            break
 
     yPred = np.empty(n)
     for ni in range(n):
@@ -359,7 +356,7 @@ def plotBoundary(dataset='iris', split=0.7, doboost=False, boostiter=5, covdiag=
 #
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 # Example usage of the functions
-def runExperiment(dataset, covdiag, doboost, split, boostiter):
+def runExperiment(dataset, covdiag, doboost, split=0.7, boostiter=5):
     testClassifier(dataset=dataset, split=split, doboost=doboost, boostiter=boostiter, covdiag=covdiag)
     plotBoundary(dataset=dataset, split=split, doboost=doboost, boostiter=boostiter, covdiag=covdiag)
 
@@ -387,13 +384,17 @@ def main():
     # testEstimates()
     setNumpyPrintOptions()
     data_sets = ('iris', 'wine', 'olivetti', 'vowel')
-    split = 0.7
-    boostiter = 5
-    doboost = True
-    covdiag = True
 
-    runExperiment('iris', True, False, split, boostiter)
-    runExperiment('iris', True, True, split, boostiter)
+    for data_set in data_sets:
+        runExperiment(data_set, False, False)
+        runExperiment(data_set, False, True)
+        runExperiment(data_set, True, False)
+        runExperiment(data_set, True, True)
+
+    # runExperiment('vowel', True, False, split, boostiter)
+    # runExperiment('vowel', True, True, split, boostiter)
+    # runExperiment('iris', True, False, split, boostiter)
+    # runExperiment('iris', True, True, split, boostiter)
 
     # runExperiment('iris', False, False, split, boostiter)
     # runExperiment('iris', True, False, split, boostiter)
