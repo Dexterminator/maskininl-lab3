@@ -391,21 +391,5 @@ def main():
         runExperiment(data_set, True, False)
         runExperiment(data_set, True, True)
 
-    # runExperiment('vowel', True, False, split, boostiter)
-    # runExperiment('vowel', True, True, split, boostiter)
-    # runExperiment('iris', True, False, split, boostiter)
-    # runExperiment('iris', True, True, split, boostiter)
-
-    # runExperiment('iris', False, False, split, boostiter)
-    # runExperiment('iris', True, False, split, boostiter)
-    # runExperiment('iris', False, True, split, boostiter)
-    # runExperiment('iris', True, True, split, boostiter)
-    # runExperiment('vowel', False, doboost, split, boostiter)
-    # runExperiment('vowel', True, doboost, split, boostiter)
-    # for data_set in data_sets:
-    #     runExperiment(data_set, False, doboost, split, boostiter)
-    #     runExperiment(data_set, True, doboost, split, boostiter)
-
-
 if __name__ == '__main__':
     main()
